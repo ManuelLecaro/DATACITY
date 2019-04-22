@@ -4,8 +4,9 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 
 from django.db import connections, connection
-from django.http import JsonResponse, HttpResponse
-
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from timeSeries.models import Measurement
 
 import json
@@ -44,5 +45,18 @@ def test(request):
 			full_count=row[3]
 			series.append(serie);
 
-	print series
+	print(series)
 	return JsonResponse({"series":series,"full_count":full_count})
+
+@login_required(login_url='noAccess')
+def logistica(request):
+		return render(request,"logistica_dash.html")
+
+
+@login_required(login_url='noAccess')
+def clima(request):
+		return render(request,"clima_dash.html")
+
+@login_required(login_url='noAccess')
+def poblacion(request):
+		return render(request,"poblacion_dash.html")

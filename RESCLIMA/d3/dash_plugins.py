@@ -11,9 +11,10 @@ from .dash_widgets import (
     BasePieChartWidget,
     BaseLineChartWidget,
     BaseGroupedBarChartWidget,
+    BaseTreeMapWidget,
 )
 
-from .forms import *
+from d3.forms import *
 
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2014-2018 Artur Barseghyan'
@@ -74,6 +75,13 @@ class BaseGroupedBarChartPlugin(BaseChartPlugin):
     form = GroupedBarChartForm
     html_classes = ['chartonic', 'd3-grouped-bar-chart-plugin']
 
+class BaseTreeMapPlugin(BaseChartPlugin):
+    """Base TreeMap chart plugin."""
+
+    name = _("Treemap")
+    form = TreeMapForm
+    html_classes = ['chartonic', 'd3-tree-map-chart-plugin']
+
 # *****************************************************************************
 # ********** Generating and registering the plugins using factory *************
 # *****************************************************************************
@@ -92,6 +100,8 @@ plugin_factory(BaseMultiTimeSeriesPlugin, 'd3_multi_time_series', sizes)
 plugin_factory(BasePieChartPlugin, 'd3_pie_chart', sizes)
 plugin_factory(BaseLineChartPlugin, 'd3_line_chart', sizes)
 plugin_factory(BaseGroupedBarChartPlugin, 'd3_grouped_bar_chart', sizes)
+plugin_factory(BaseTreeMapPlugin, 'd3_tree_map_chart', sizes)
+
 
 # *****************************************************************************
 # ********************************* Registering widgets ***********************
@@ -105,3 +115,4 @@ plugin_widget_factory(BaseMultiTimeSeriesWidget, 'bootstrap_materialize', 'main'
 plugin_widget_factory(BasePieChartWidget, 'bootstrap_materialize', 'main', 'd3_pie_chart', sizes)
 plugin_widget_factory(BaseLineChartWidget, 'bootstrap_materialize', 'main', 'd3_line_chart', sizes)
 plugin_widget_factory(BaseGroupedBarChartWidget, 'bootstrap_materialize', 'main', 'd3_grouped_bar_chart', sizes)
+plugin_widget_factory(BaseTreeMapWidget, 'bootstrap_materialize', 'main', 'd3_tree_map_chart', sizes)

@@ -5,10 +5,10 @@ from timeSeries import models
 from simulation import models as simulation_models
 from main import models as main_models
 from . import serializers
-
+import traceback
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-
+from django.contrib.gis.db import models
 import json
 import collections
 
@@ -28,14 +28,15 @@ class Medicion(viewsets.ViewSet):
 		try:
 			if start_date == "null" or end_date == "null":
 				# qs no debe incluir fechas
-				qs = models.Measurement.objects.raw('''SELECT * FROM \"timeSeries_measurement\"''');
+				qs = models.Measurement.objects.raw('''SELECT * FROM "timeSeries_measurement"''')
 			else:
-				qs = models.Measurement.objects.raw('''SELECT * FROM \"timeSeries_measurement\" WHERE ts <= %s::DATE AND ts >= %s::DATE''', [end_date, start_date]);
+				qs = models.Measurement.objects.raw('''SELECT * FROM "timeSeries_measurement" WHERE ts <= %s::DATE AND ts >= %s::DATE''', [end_date, start_date]);
 			ms = list(qs)
 			avg = [0] * 9
 			# Agrupo por id de variable.
 			for i in range(len(ms)):
-				r = json.loads(ms[i].readings)
+				r = json.dumps(ms[i].readings)
+				r = json.loads(r)
 				avg[0] = avg[0] + r["1"] # Temperatura
 				avg[1] = avg[1] + r["2"] # Humedad Relativa
 				avg[2] = avg[2] + r["3"] # Lluvia
@@ -59,13 +60,14 @@ class Medicion(viewsets.ViewSet):
 					   {"value":avg[7], "key":dict[9]},
 					   {"value":avg[8], "key":dict[10]},
 					  ]
-		except:
+		except Exception as e:
 			# Si el Query retorna None
+			print(traceback.format_exc())
 			content = {}
 
 		return Response(content)
 
-# Grafico circular para los investigadores de logsitica y transporte
+# Grafico circular para los investigadores de logistica y transporte
 # Response format: {key, value}
 class WE(viewsets.ViewSet):
 	renderer_classes = (JSONRenderer, )
@@ -204,17 +206,17 @@ class LEN(viewsets.ViewSet):
 			# Obtener la informacion de la BD
 			if start_date == "null" or end_date == "null":
 				# qs no debe incluir fechas
-				qs = main_models.Logistica.objects.raw('''SELECT * FROM main_logistica WHERE vehicle_type = 1 AND movement = 1''', [end_date, start_date])
+				qs = main_models.Logistica.objects.all()
 			else:
-				qs = main_models.Logistica.objects.raw('''SELECT * FROM main_logistica WHERE date >= %s AND date <= %s AND vehicle_type = 1 AND movement = 1''', [end_date, start_date])
-
+				qs = main_models.Logistica.objects.filter(date__range =[start_date,end_date])
 			d = list(qs)
 			dict = {}
 			for i in range(len(d)):
 				dict[d[i].id_term] = d[i].value
 
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
+
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -241,7 +243,7 @@ class LEO(viewsets.ViewSet):
 				dict[d[i].id_term] = d[i].value
 
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -268,7 +270,7 @@ class LNO(viewsets.ViewSet):
 				dict[d[i].id_term] = d[i].value
 
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -295,7 +297,7 @@ class LON(viewsets.ViewSet):
 				dict[d[i].id_term] = d[i].value
 
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -322,7 +324,7 @@ class LOE(viewsets.ViewSet):
 				dict[d[i].id_term] = d[i].value
 
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -349,7 +351,7 @@ class LNE(viewsets.ViewSet):
 				dict[d[i].id_term] = d[i].value
 
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -377,7 +379,7 @@ class WEN(viewsets.ViewSet):
 				dict[d[i].id_term] = d[i].value
 
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -404,7 +406,7 @@ class WEO(viewsets.ViewSet):
 				dict[d[i].id_term] = d[i].value
 
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -431,7 +433,7 @@ class WNO(viewsets.ViewSet):
 				dict[d[i].id_term] = d[i].value
 
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -458,7 +460,7 @@ class WON(viewsets.ViewSet):
 				dict[d[i].id_term] = d[i].value
 
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -485,7 +487,7 @@ class WOE(viewsets.ViewSet):
 				dict[d[i].id_term] = d[i].value
 
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -512,7 +514,7 @@ class WNE(viewsets.ViewSet):
 				dict[d[i].id_term] = d[i].value
 
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -767,7 +769,7 @@ class Minimo(viewsets.ViewSet):
 				dict[data[i].date] = data[i].tmin
 
 			# Crear JSON dinamico
-			content = [{"count": v, "month": k } for k, v in dict.iteritems()]
+			content = [{"count": v, "month": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -792,7 +794,7 @@ class Maximo(viewsets.ViewSet):
 				dict[data[i].date] = data[i].tmax
 
 			# Crear JSON dinamico
-			content = [{"count": v, "month": k } for k, v in dict.iteritems()]
+			content = [{"count": v, "month": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -817,7 +819,7 @@ class Promedio(viewsets.ViewSet):
 				dict[data[i].date] = data[i].tmean
 
 			# Crear JSON dinamico
-			content = [{"count": v, "month": k } for k, v in dict.iteritems()]
+			content = [{"count": v, "month": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -842,7 +844,7 @@ class RR(viewsets.ViewSet):
 				dict[data[i].date] = data[i].rr
 
 			# Crear JSON dinamico
-			content = [{"count": v, "month": k } for k, v in dict.iteritems()]
+			content = [{"count": v, "month": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -867,7 +869,7 @@ class ONI(viewsets.ViewSet):
 				dict[data[i].date] = data[i].oni
 
 			# Crear JSON dinamico
-			content = [{"count": v, "month": k } for k, v in dict.iteritems()]
+			content = [{"count": v, "month": k } for k, v in dict.items()]
 		except:
 			# Si el Query retorna None
 			content = {}
@@ -946,7 +948,7 @@ class Population(viewsets.ViewSet):
 			for i in range(len(d)):
 				dict[d[i].year] = d[i].total_pob
 			# Crear JSON dinamico
-			content = [{"value": v, "key": k } for k, v in dict.iteritems()]
+			content = [{"value": v, "key": k } for k, v in dict.items()]
 
 		except:
 			# Si el Query retorna None
@@ -979,9 +981,214 @@ class Precipitation(viewsets.ViewSet):
 				dict[d[i].year] = lista_dicts
 			ordered_dict = collections.OrderedDict(sorted(dict.items()))
 			# Crear JSON dinamico
-			content = [{"values": v, "categorie": k} for k, v in ordered_dict.iteritems()]
-		except:
+			content = [{"values": v, "categorie": k} for k, v in ordered_dict.items()]
+		except Exception as e:
+			print(traceback.format_exc())
 			# Si el Query retorna None
 			content = {}
 
+		return Response(content)
+
+"""Descripcion: Circulacion de distintas clases de vehiculos en GI en distintos sentidos
+	Sentidos = 1: sentido E-N, 2:Sentido E-O, 3:Sentido N-O, 4:Sentido O-N, 5:Sentido O-E, 6:Sentido N-E
+	Tipo de vehiculos = 0:pesado, 1:liviano 
+	Response format: 
+	{sentido: {
+		value: 0,
+		autos: {
+			livianos: 4,
+			medianos: 8,
+			pesados : 6,
+		}
+	},
+	 sentido: {
+		 value: 1,
+		 autos: {
+			 livianos:7,
+			 medianos: 9,
+			 pesados: 0,
+		 }
+	 }
+	}
+	
+"""
+class MovVehiculos(viewsets.ViewSet):
+	renderer_classes = (JSONRenderer, )
+	def list(self, request, start_date=None, end_date=None):
+		try:
+			# Obtener la informacion de la BD
+			if start_date == "null" or end_date == "null":
+				# qs no debe incluir fechas
+				qs = main_models.Logistica.objects.all()
+			else:
+				qs = main_models.Logistica.objects.filter(date__range =[start_date,end_date])
+			
+			dict = {}
+			sentidos = ['sentido E-N','sentido E-O','sentido N-O','Sentido O-N','sentido O-E','sentido N-E']
+			for i in range(1,7):
+				sentido_qs = qs.filter(movement=i)
+				dict[i] = { 'sentido':sentidos[i-1],
+									 'livianos': sentido_qs.filter(vehicle_type=1).count(),
+									 'pesados': sentido_qs.filter(vehicle_type=0).count()
+						  }
+
+			ordered_dict = collections.OrderedDict(sorted(dict.items()))
+			
+			# Crear JSON dinamico
+			content = [{"values": v, "categorie": k} for k, v in ordered_dict.items()]
+			
+		except:
+			# Si el Query retorna None
+			content = {}
+		return Response(content)
+
+
+"""
+Descripcion: Datos sobre analfabetismo segun
+el censo.
+Response format:
+	{
+		2015: value: {
+					year: 2015,
+					hombres: 14578,
+					mujeres: 4759,
+				},
+	}
+
+"""
+class Analfabetismo(viewsets.ViewSet):
+	renderer_classes = (JSONRenderer, )
+
+	def list(self, request, start_date=None, end_date=None):
+		try:
+			# Obtener la informacion de la BD
+			if start_date == "null" or end_date == "null":
+				# qs no debe incluir fechas
+				qs = main_models.Censo.objects.all()
+			else:
+				qs = main_models.Censo.objects.filter(year__gte = datetime.datetime.strptime(start_date, '%Y'),year__lte= datetime.datetime.strptime(end_date, '%Y'))
+			
+			d = list(qs)
+			dict = {}
+
+			for i in range(len(d)):
+				dict[d[i].year] = {"lettered": d[i].lettered,
+									"unlettered": d[i].unlettered}
+			# Crear JSON dinamico
+			content = [{"value": v, "key": k } for k, v in dict.items()]
+
+		except:
+			# Si el Query retorna None
+			content = {}
+		return Response(content)
+
+"""
+Endpoint que retorna las mediciones de las
+estaciones climaticas segun la zona
+y fechas
+formato de json file
+[
+	{
+		value: {
+			id_station: 444585,
+			date:2012-04-04,
+			medida1: 44444,
+			medida2: 44445,
+			.
+			.
+			medidan : 44446,
+		},
+		value: id_station_2:{
+			date:
+		}
+	}
+]
+"""
+class TimeSeriesAllOutGraph(viewsets.ViewSet):
+	renderer_classes = (JSONRenderer)
+
+	def list(self, request, start_date=None, end_date=None, latitude=None, longitud=None, around=None):
+		try:
+			stations = models.Station.objects.all()
+			#Part that gets the Stations around a certain location
+			if(around=="null"):
+				around=30000
+
+			if(latitude != "null" and longitud!="null" ):
+				pnt = fromstr('POINT('+latitude+' '+longitud+'), srid=4326')
+				stations.filter(point__distance_lte=(pnt, around)) #meters are assumedin the distance around
+
+			st = list(stations)
+			dict= {}
+			list_ids = []
+			for i in range(len(st)):
+				list_ids.append(dict_st[st[i].id])
+
+			# Obtener la informacion de la BD
+			if start_date == "null" or end_date == "null":
+				# qs no debe incluir fechas
+				qs = models.Measurement.objects.all()
+			else:
+				qs = models.Measurement.objects.filter(date__range =[start_date,end_date], id__in=list_ids) #realia el filtro 
+																											#segun la fecha y las ids de las estaciones localizadas en el area
+			qs = models.Variable.objects.all()
+			dict = {}
+			v = list(qs)
+			for i in range(len(v)):
+				dict[i] = v[i].name
+
+			d = list(qs)
+
+			for i in range(len(qs)):
+				r = json.dumps(qs[i].readings)
+				r = json.loads(r)
+				avg[0] = avg[0] + r["1"] # Temperatura
+				avg[1] = avg[1] + r["2"] # Humedad Relativa
+				avg[2] = avg[2] + r["3"] # Lluvia
+				avg[3] = avg[3] + r["4"] # Direccion del viento
+				avg[4] = avg[4] + r["5"] # Velocidad del viento
+				avg[5] = avg[5] + r["6"] # Velocidad de rafagas
+				avg[6] = avg[6] + r["7"] # Luminancia
+				avg[7] = avg[7] + r["10"] # Presión
+				avg[8] = avg[8] + r["11"] # Indice UV
+			
+			for i in range(len(stations)):
+				
+				dict[d[i].id_term] = {"": d[i].lettered,
+								   "": d[i].unlettered}
+			# Crear JSON dinamico
+			content = [{"value": v, "key": k } for k, v in dict.items()]
+
+		except:
+			# Si el Query retorna None
+			content = {}
+		return Response(content)
+
+
+"""
+"""
+class Aforo(viewsets.ViewSet):
+	renderer_classes = (JSONRenderer)
+
+	def list(self, request, start_date=None, end_date=None):
+		try:
+			# Obtener la informacion de la BD
+			if start_date == "null" or end_date == "null":
+				# qs no debe incluir fechas
+				qs = main_models.Logistica.objects.all()
+			else:
+				qs = main_models.Logistica.objects.filter(year__gte = datetime.datetime.strptime(start_date, '%Y'),year__lte= datetime.datetime.strptime(end_date, '%Y'))
+			
+			d = list(qs)
+			dict = {}
+
+			for i in range(len(d)):
+				dict[d[i].id_term] = d[i].value
+
+			# Crear JSON dinamico
+			content = [{"value": v, "key": k } for k, v in dict.items()]
+
+		except:
+			# Si el Query retorna None
+			content = {}
 		return Response(content)

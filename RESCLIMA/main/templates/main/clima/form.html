@@ -32,6 +32,37 @@
 									<label class="lable-file-field" for="id_file">Cargar datos [.csv]</label>
 									<div class="div-field"><input type="file" name="file" required="" id="id_file"></div>
 							</div>
+			<!--Cambios dentro de la Form-->
+							<!-- ID -->
+							<div class="input-field col s12 m6 l6">
+								<label for="{{ form.id.id_for_label }}">ID</label>
+								{{ form.id }}
+								<input type="text" value="{{ object.id }}" readonly>
+							</div>
+							<div class="input-field col s12 m6 l6">
+            				  <label for="{{ form.tmin.id_for_label }}">TMIN</label>
+            				  <input type="text" value="{{ object.tmin }}" >
+            				</div>
+						<!-- TMAX -->
+							<div class="input-field col s12 m6 l6">
+								<label for="{{ form.tmax.id_for_label }}">TMAX</label>
+								<input type="text" value="{{ object.tmax }}">
+							</div>
+            			<!-- RR -->
+							<div class="input-field col s12 m6 l6">
+								<label for="{{ form.rr.id_for_label }}">RR</label>
+								<input type="text" value="{{ object.rr }}" >
+							</div>
+            			<!-- Tipo de Movimiento -->
+							<div class="input-field col s12 m6 l6">
+								<label for="{{ form.oni.id_for_label }}">ONI</label>
+								<input type="text" value="{{ object.oni }}" >
+							</div>
+						<!-- Fecha -->
+							<div class="input-field col s12 m6 l6">
+								<label for="{{ form.date.id_for_label }}">Fecha</label>
+								<input type="text" value="{{ object.date }}">
+							</div>
 						</div>
 						{% ifequal form.instance.pk None %}
 							<!--Create-->
@@ -41,6 +72,7 @@
 							<button class="btn waves-effect waves-light" type="submit"><i class="material-icons left">check_circle</i> Guardar cambios y salir</button>
 						{% endifequal %}
 							<button class="btn waves-effect waves-light red accent-2" type="button" onClick="window.history.back();"><i class="material-icons left">cancel</i>Cancelar</button>
+							<button class="mt-2 btn waves-effect waves-light" type="button" onClick="window.history.back();"><i class="material-icons left">keyboard_backspace</i>Atrás</button>
 					</form>
 				</div>
 			</div>

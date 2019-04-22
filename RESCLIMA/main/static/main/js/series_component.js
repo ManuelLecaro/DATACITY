@@ -38,6 +38,20 @@ Vue.component("series_component",{
 							</div>
 						</div>		
 					</div>
+					<!-- Botones de visualizar y descargar -->
+					<div v-if="shared.series.length > 7">
+						<a
+						class="btn waves-effect waves-light gradient-45deg-light-blue-cyan" 
+						v-bind:disabled="selected_count==0"
+						v-on:click="visualizeSeries">
+							<i class="material-icons left">remove_red_eye</i>Visualizar</a>
+						<a
+						class="btn waves-effect waves-light gradient-45deg-light-blue-cyan" 
+						v-bind:disabled="selected_count==0"
+						v-on:click="downloadSeries">
+							<i class="material-icons left">file_download</i>Descargar</a>
+					</div>
+
 					<!-- botones de paginacion -->
 					<div class="row"
 						v-if="offset != 0 || offset < max_offset">
@@ -95,14 +109,23 @@ Vue.component("series_component",{
 			// maximo offset, al principio
 			// se tiene un valor negativo
 			max_offset:-1,
-			shared:store
+			shared:store,
+			
 		}
 	},
 	mounted(){
-		this.$root.$on('searchSeries', this.searchSeries);
+		this.$root.$on('searchSeries', this.restart);
 	},
 	methods:{
+		restart(){
+			this.state = "initial";
+			this.limit = 10,
+			this.offset = 0,
+			this.max_offset = -1,
+			this.searchSeries();
+		},
 		searchSeries(){
+			this.selected_count = 0
 			// se obtienen los parametros de busqueda
 			var data = this.shared.getPostData()
 			if(data==null){
@@ -114,12 +137,15 @@ Vue.component("series_component",{
 			// se agrega el limit y el offset
 			data["limit"] = self.limit;
 			data["offset"] = self.offset;
+			headers = {'X-CSRFToken': this.shared.getCookie("csrftoken")}
 			// se realiza la peticion ajax
 			data = JSON.stringify(data);
 			var request = $.post(url,data);
 			self.state = "loading";	
-			request.done(function(response){
-				var  results = response["series"];
+			axios.post(url, data, {'headers':headers})
+		    .then(response => {
+		    	response = response['data'];
+		    	var  results = response["series"];
 				// se determina el maximo offset
 				var full_count = response["full_count"];
 				var max_offset = full_count - self.limit;
@@ -139,11 +165,11 @@ Vue.component("series_component",{
 				}
 				// se cambia el estado
 				self.state = "searched";
-			});
-			request.fail(function(error){
-				self.state = "fail";	
-			});
-
+		    })
+		    .catch(e => {
+		    	self.state = "fail";
+		    })
+			
 		},
 		selectSerie(serie){
 			serie.selected = !serie.selected;
@@ -214,4 +240,5 @@ Vue.component("series_component",{
 		
 	}
 })
+
 

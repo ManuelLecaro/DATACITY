@@ -36,8 +36,10 @@ class BaseBarChartWidget(BaseChartWidget):
 
     media_js = (
         'js/d3.v3.min.js',  # Main D3 script
-        'js/d3.tip.min.js', # D3 Tip Script
-        'js/d3_bar_chart.js',  # Helper script
+#        'js/d3_bar_chart.js',  # Helper script
+#        'js/d3.tip.min.js',
+        'js/plotly-latest.min.js', #plotly new Script
+        'js/plotly_bar_chart.js',
     )
 
     media_css = (
@@ -50,9 +52,8 @@ class BaseGroupedBarChartWidget(BaseChartWidget):
     """Base bar chart widget."""
 
     media_js = (
-        'js/d3.v3.min.js',  # Main D3 script
-        'js/d3.tip.min.js', # D3 Tip Script
-        'js/d3_grouped_bar_chart.js',  # Helper script
+        'js/plotly-latest.min.js', #plotly new Script
+        'js/plotly_grouped_bar_chart.js'
     )
 
     media_css = (
@@ -66,10 +67,9 @@ class BaseTimeSeriesWidget(BaseChartWidget):
 
     media_js = (
         'js/d3.v3.min.js',  # Main D3 script
-        'js/underscore.min.js', # Underscore Script
-        'js/d3.tip.min.js', # D3 Tip Script
         'js/d3.queue.min.js', # D3 Queue
-        'js/d3_time_series.js',  # Helper script
+        'js/plotly-latest.min.js', #plotly new Script
+        'js/plotly_time_series.js',    
     )
 
     media_css = (
@@ -83,11 +83,9 @@ class BaseMultiTimeSeriesWidget(BaseChartWidget):
 
     media_js = (
         'js/d3.v3.min.js',  # Main D3 script
-        'js/underscore.min.js', # Underscore Script
-        'js/legend.min.js', # D3 Legend
-        'js/d3.tip.min.js', # D3 Tip Script
         'js/d3.queue.min.js', # D3 Queue
-        'js/d3_multi_time_series.js',  # Helper script
+        'js/plotly-latest.min.js', #plotly new Script
+        'js/plotly_multi_time_series.js',
     )
 
     media_css = (
@@ -100,13 +98,13 @@ class BasePieChartWidget(BaseChartWidget):
     """Pie chart widget."""
 
     media_js = (
-        'js/d3.v3.min.js',  # Main D3 script
-        'js/d3.tip.min.js', # D3 Tip Script
-        'js/d3_pie_chart.js',  # Helper script
+        'js/plotly-latest.min.js', #plotly new Script
+        'js/plotly_pie_chart.js',
+        'js/treemap-squared-0.5.min.js',
     )
 
     media_css = (
-        'css/d3_pie_chart.css',  # Specific styles
+        #'css/d3_pie_chart.css',  # Specific styles
     )
 
     _template = 'd3_samples/plugins/render_d3_pie_chart.html'
@@ -116,14 +114,39 @@ class BaseLineChartWidget(BaseChartWidget):
 
     media_js = (
         'js/d3.v3.min.js',  # Main D3 script
-        'js/legend.min.js', # D3 Legend
-        'js/d3.tip.min.js', # D3 Tip Script
         'js/d3.queue.min.js', # D3 Queue
-        'js/d3_line_chart.js',  # Helper script
+       # 'js/d3_line_chart.js',  # Helper script
+        'js/plotly-latest.min.js', #plotly new Script
+        'js/plotly_line_chart.js'
     )
 
     media_css = (
-        'css/d3_line_chart.css',  # Specific styles
+        #'css/d3_line_chart.css',  # Specific styles
     )
 
     _template = 'd3_samples/plugins/render_d3_line_chart.html'
+
+class BaseTreeMapWidget(BaseChartWidget):
+    """Tree Map Widget"""
+
+    media_js = (
+        'js/plotly-latest.min.js', #plotly new Script
+        'js/plotly_tree_map.js',  # Helper script
+        'js/treemap-squared-0.5.min.js',
+    )
+
+    media_css = (
+        'css/d3_tree_map.css',  # Specific styles
+    )
+
+    _template = 'd3_samples/plugins/render_d3_tree_map.html'
+
+class BaseBubbleChart(BaseChartWidget):
+    """Bubble Chart Widget"""
+
+    media_js = (
+        'js/d3.v3.min.js',  # Main D3 script
+        'js/plotly-latest.min.js', #plotly new Script
+        'js/plotly_bubble_chart.js' #Helper script
+
+    )

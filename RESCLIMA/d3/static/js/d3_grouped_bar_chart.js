@@ -73,14 +73,14 @@ function d3GroupedBarChartSample(container, source, start_date, end_date, rangeL
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      console.log(d)
       return "<div><span>" + d.rate + ":</span> <span style='color:white'>" + d.value + "</span></div>";
     })
 
   // BUG: No llamar tooltip en 6x6
   if (getGroupedBarChartPluginSize(size) != 6) { svg.call(tip) }
+  svg.call(tip)
 
-  d3.json("http://127.0.0.1:8000/api/" + source + "/" + start_date + "/" + end_date, function(error, data) {
+  d3.json("/api/" + source + "/" + start_date + "/" + end_date, function(error, data) {
 
     var categoriesNames = data.map(function(d) { return d.categorie; });
     var rateNames = data[0].values.map(function(d) { return d.rate; });

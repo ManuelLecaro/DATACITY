@@ -46,9 +46,9 @@ function d3MultiTimeSeriesSample(container, size, source, origin, outset, rangeL
   var optheight = 370;
 
   // Define URL for JSON
-  SOURCE_URL = "http://127.0.0.1:8000/api/" + source + "/" + start_date + "/" + end_date + "/";
-  ORIGIN_URL = "http://127.0.0.1:8000/api/" + origin + "/" + start_date + "/" + end_date + "/";
-  OUTSET_URL = "http://127.0.0.1:8000/api/" + outset + "/" + start_date + "/" + end_date + "/";
+  SOURCE_URL = "/api/" + source + "/" + start_date + "/" + end_date + "/";
+  ORIGIN_URL = "/api/" + origin + "/" + start_date + "/" + end_date + "/";
+  OUTSET_URL = "/api/" + outset + "/" + start_date + "/" + end_date + "/";
 
   d3.queue()
     .defer(d3.json, SOURCE_URL)

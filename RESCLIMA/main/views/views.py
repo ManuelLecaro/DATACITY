@@ -3,12 +3,14 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
+from wsgiref.util import FileWrapper
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from celery.result import AsyncResult
 import json
+from django.core import serializers 
 from dash.models import DashboardWorkspace
 
 # Redirecciona al Login
@@ -38,6 +40,11 @@ def home(request):
 def profile(request):
 	return render(request, 'main/profile.html', {})
 
+#Redirecciona a la página de ayuda y faqs
+def helpfaq(request):
+	return render(request, 'main/help.html', {})
+
+#Redirecciona a la página de productos, según el rol se redireccionan a distintas páginas
 def products(request):
 	created_by={}
 	products = DashboardWorkspace.objects.all().filter(shared_with=request.user)
@@ -50,11 +57,11 @@ def get_task_info(request):
 	task_id = request.GET.get('task_id', None)
 	if task_id is not None:
 		task = AsyncResult(task_id)
-		print "Lo que recupero  ", task_id
+		print( "Lo que recupero  ", task_id)
 		if task.result:
 			if "error" in task.result:
 				if task.result["error"]:
-					print "ERROR CELERY"
+					print( "ERROR CELERY")
 		data = {}
 		data["state"] = task.state
 		if (task.result):
@@ -67,3 +74,15 @@ def get_task_info(request):
 		data["state"]="FAILURE"
 		data["result"]={"error":"Error, el task se perdió"}
 		return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+"""
+Vista que sirve para guardar el archivo
+de preguntas mas frecuentes para la vista
+de ayuda
+"""
+def jsonfaqs(request):
+	wrapper = FileWrapper(open('./main/static/main/json/faqs.json',"r"))
+	response = HttpResponse(wrapper, content_type='application/json')
+	response['Content-Disposition'] = 'attachement; filename=dump.json'
+	return response

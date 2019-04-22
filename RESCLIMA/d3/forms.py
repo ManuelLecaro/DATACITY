@@ -84,6 +84,11 @@ MULTI_TIME_SERIES_CHOICES = (
   ('d3_time_series_tmin', 'Temperatura Minima'),
 )
 
+TREE_MAP_CHOICES = (
+  (None, 'Selecciona una opción'),
+  ('d3_tree_map_chart_logistica', 'Datos de movilizacion'),
+)
+
 # Formulario para Bar Chart
 class BarChartForm(forms.Form, DashboardPluginFormBase):
 
@@ -93,6 +98,7 @@ class BarChartForm(forms.Form, DashboardPluginFormBase):
         ("end_date", ""),
         ("domainLabel", ""),
         ("rangeLabel", ""),
+        ("description",""),
         ("simulation", ""),
         ("source", ""),
         ("color", ""),
@@ -104,6 +110,7 @@ class BarChartForm(forms.Form, DashboardPluginFormBase):
     rangeLabel = forms.CharField(label=_("Etiqueta del eje Y"), required=False)
     start_date = forms.CharField(label=_("Fecha de inicio"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
     end_date = forms.CharField(label=_("Fecha de finalizacion"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
+    description = forms.CharField(label=_("Descripción de gráfico estadístico (Admite HTML)"), required=False,widget=forms.Textarea)
 
     def __init__(self, *args, **kwargs):
         super(BarChartForm, self).__init__(*args, **kwargs)
@@ -124,6 +131,7 @@ class GroupedBarChartForm(forms.Form, DashboardPluginFormBase):
         ("start_date", ""),
         ("end_date", ""),
         ("rangeLabel", ""),
+        ("description", ""),
         ("source", ""),
     ]
 
@@ -131,6 +139,7 @@ class GroupedBarChartForm(forms.Form, DashboardPluginFormBase):
     rangeLabel = forms.CharField(label=_("Etiqueta del eje Y"), required=False)
     start_date = forms.CharField(label=_("Fecha de inicio"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
     end_date = forms.CharField(label=_("Fecha de finalizacion"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
+    description = forms.CharField(label=_("Descripción de gráfico estadístico (Admite HTML)"), required=False,widget=forms.Textarea)
     source = forms.ChoiceField(label=_("Tabla/API"), choices=GROUPED_BAR_CHART_CHOICES, required=True)
 
 # Formulario para Time Series
@@ -140,6 +149,7 @@ class TimeSeriesForm(forms.Form, DashboardPluginFormBase):
         ("title", ""),
         ("rangeLabel", ""),
         ("start_date", ""),
+        ("description",""),
         ("end_date", ""),
         ("source", ""),
     ]
@@ -148,7 +158,9 @@ class TimeSeriesForm(forms.Form, DashboardPluginFormBase):
     rangeLabel = forms.CharField(label=_("Etiqueta del eje Y"), required=False)
     start_date = forms.CharField(label=_("Fecha de inicio"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
     end_date = forms.CharField(label=_("Fecha de finalizacion"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
+    description = forms.CharField(label=_("Descripción de gráfico estadístico (Admite HTML)"), required=False,widget=forms.Textarea)
     source = forms.ChoiceField(label=_("Tabla/API"), choices=TIME_SERIES_CHOICES, required=True)
+
 
 # Formulario para Multi Time Series
 class MultiTimeSeriesForm(forms.Form, DashboardPluginFormBase):
@@ -158,6 +170,7 @@ class MultiTimeSeriesForm(forms.Form, DashboardPluginFormBase):
         ("rangeLabel", ""),
         ("start_date", ""),
         ("end_date", ""),
+        ("description",""),
         ("source", ""),
         ("origin", ""),
         ("outset", ""),
@@ -167,10 +180,11 @@ class MultiTimeSeriesForm(forms.Form, DashboardPluginFormBase):
     rangeLabel = forms.CharField(label=_("Etiqueta del eje Y"), required=False)
     start_date = forms.CharField(label=_("Fecha de inicio"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
     end_date = forms.CharField(label=_("Fecha de finalizacion"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
+    description = forms.CharField(label=_("Descripción de gráfico estadístico (Admite HTML)"), required=False,widget=forms.Textarea)
     source = forms.ChoiceField(label=_("Tabla/API"), choices=MULTI_TIME_SERIES_CHOICES, required=True)
     origin = forms.ChoiceField(label=_("Tabla/API"), choices=MULTI_TIME_SERIES_CHOICES, required=True)
     outset = forms.ChoiceField(label=_("Tabla/API"), choices=MULTI_TIME_SERIES_CHOICES, required=True)
-
+ 
 # Formulario para Pie Chart
 class PieChartForm(forms.Form, DashboardPluginFormBase):
 
@@ -180,11 +194,13 @@ class PieChartForm(forms.Form, DashboardPluginFormBase):
         ("source", ""),
         ("start_date", ""),
         ("end_date", ""),
+        ("description", ""),
     ]
 
     title = forms.CharField(label=_("Titulo"), required=True)
     start_date = forms.CharField(label=_("Fecha de inicio"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
     end_date = forms.CharField(label=_("Fecha de finalizacion"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
+    description = forms.CharField(label=_("Descripción de gráfico estadístico (Admite HTML)"), required=False,widget=forms.Textarea)
 
     def __init__(self, *args, **kwargs):
         super(PieChartForm, self).__init__(*args, **kwargs)
@@ -204,6 +220,7 @@ class LineChartForm(forms.Form, DashboardPluginFormBase):
         ("rangeLabel", ""),
         ("start_date", ""),
         ("end_date", ""),
+        ("description",""),
         ("simulation", ""),
         ("source", ""),
         ("origin", ""),
@@ -217,6 +234,7 @@ class LineChartForm(forms.Form, DashboardPluginFormBase):
     rangeLabel = forms.CharField(label=_("Etiqueta del eje Y"), required=False)
     start_date = forms.CharField(label=_("Fecha de inicio"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
     end_date = forms.CharField(label=_("Fecha de finalizacion"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
+    description = forms.CharField(label=_("Descripción de gráfico estadístico (Admite HTML)"), required=False,widget=forms.Textarea)
 
 
     def __init__(self, *args, **kwargs):
@@ -230,6 +248,35 @@ class LineChartForm(forms.Form, DashboardPluginFormBase):
         self.fields['origin'] = forms.ChoiceField(label=_("Tabla/API"), choices=KEY_VALUE_CHOICES, required=True)
         self.fields['color'] = forms.CharField(label=_("Color principal"), required=True, widget=forms.TextInput(attrs={'type':'color'}))
         self.fields['hover'] = forms.CharField(label=_("Color secundario"), required=True, widget=forms.TextInput(attrs={'type':'color'}))
+
+
+# Formulario para TreeMap
+class TreeMapForm(forms.Form, DashboardPluginFormBase):
+
+    plugin_data_fields = [
+        ("title", ""),
+        ("start_date", ""),
+        ("end_date", ""),
+        ("description",""),
+        ("simulation", ""),
+        ("source", ""),
+
+    ]
+
+    title = forms.CharField(label=_("Titulo"), required=True)
+    start_date = forms.CharField(label=_("Fecha de inicio"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
+    end_date = forms.CharField(label=_("Fecha de finalizacion"), required=False, widget=forms.TextInput(attrs={'type':'date'}))
+    description = forms.CharField(label=_("Descripción de gráfico estadístico (Admite HTML)"), required=False,widget=forms.Textarea)
+
+    def __init__(self, *args, **kwargs):
+        super(TreeMapForm, self).__init__(*args, **kwargs)
+        SIMULATION_CHOICES = [(None, 'Selecciona una opción')]
+        TEMP = [(s.id, s) for s in  models.Simulation.objects.all()]
+        for i in range(len(TEMP)):
+            SIMULATION_CHOICES.append(TEMP[i])
+        self.fields['simulation'] = forms.ChoiceField(label=_("Simulacion [Solo en caso de que quiera utilizar datos de SUMO]"), choices=SIMULATION_CHOICES, required=False)
+        self.fields['source'] = forms.ChoiceField(label=_("Tabla/API"), choices=TREE_MAP_CHOICES, required=True)
+
 
 # Clase base de la cual heredan todos los charts
 class ChartForm(forms.Form, DashboardPluginFormBase):

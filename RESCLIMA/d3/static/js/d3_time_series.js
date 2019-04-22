@@ -44,7 +44,7 @@ function d3TimeSeriesSample(container, size, source, rangeLabel, start_date, end
   var optheight = 370;
 
   // Define URL for JSON
-  SOURCE_URL = "http://127.0.0.1:8000/api/" + source + "/" + start_date + "/" + end_date + "/";
+  SOURCE_URL = "/api/" + source + "/" + start_date + "/" + end_date + "/";
 
   d3.queue()
     .defer(d3.json, SOURCE_URL)
@@ -230,7 +230,7 @@ function d3TimeSeriesSample(container, size, source, rangeLabel, start_date, end
           .attr("width", width + margin.left + margin.right)
           .attr("height", height + margin.top + margin.bottom)
         	.attr("class", "metric-chart");// CB -- "line-chart" -- CB //
-
+            brush
       var tip = d3.tip()
         .attr('class', 'd3-tip')
         .offset([-10, 0])

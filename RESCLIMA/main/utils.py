@@ -1,9 +1,10 @@
 # -*- encoding: utf-8 -*-
 import csv
-from .models import *
+import codecs
+from main.models import *
 
 def copy_csv_logistica(path, user):
-	data = csv.DictReader(path)
+	data = csv.DictReader(codecs.iterdecode(path, 'utf-8'))
 	for row in data:
 		Logistica.objects.create(id_term=row['id_term'],
 								 value=row['value'],
@@ -14,7 +15,7 @@ def copy_csv_logistica(path, user):
 								 user=user)
 
 def copy_csv_clima(path, user):
-	data = csv.DictReader(path)
+	data = csv.DictReader(codecs.iterdecode(path, 'utf-8'))
 	for row in data:
 		Clima.objects.create(date=row['date'],
 								 tmin=row['tmin'],
@@ -25,8 +26,9 @@ def copy_csv_clima(path, user):
 								 user=user)
 
 def copy_csv_censo(path, user):
-	data = csv.DictReader(path)
+	data = csv.DictReader(codecs.iterdecode(path, 'utf-8'))
 	for row in data:
+		print(row['year'])
 		Censo.objects.create(year=row['year'],
 								 man=row['man'],
 								 woman=row['woman'],
